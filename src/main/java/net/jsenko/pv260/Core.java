@@ -1,3 +1,5 @@
+package net.jsenko.pv260;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 

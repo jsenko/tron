@@ -1,3 +1,5 @@
+package net.jsenko.pv260;
+
 import java.awt.Image;
 import java.util.ArrayList;
 public class Animation {
