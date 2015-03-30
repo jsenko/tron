@@ -1,10 +1,6 @@
 package net.jsenko.pv260;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -12,8 +8,15 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
-public class yourclass extends Core implements KeyListener, MouseListener,
+public class yourclass implements Drawable, KeyListener, MouseListener,
 		MouseMotionListener {
+
+    private Core core;
+
+    private ScreenManager sm;
+
+
+
 	int centrex1 = 40;
 	int centrey1 = 40;
 	int centrex2 = 600;
@@ -26,16 +29,27 @@ public class yourclass extends Core implements KeyListener, MouseListener,
 	ArrayList<Integer> pathx2 = new ArrayList();
 	ArrayList<Integer> pathy2 = new ArrayList();
 
-	public void init() {
-		super.init();
 
-		Window w = sm.getFullScreenWindow();
+    public yourclass() {
+        this.core = new Core(this);
+    }
+
+    public void init() {
+        sm = core.init();
+
+        Window w = sm.getFullScreenWindow();
 		w.addKeyListener(this);
 		w.addMouseListener(this);
 		w.addMouseMotionListener(this);
 	}
 
-	public static void main(String[] args) {
+    @Override
+    public void run() {
+        init();
+        core.run();
+    }
+
+    public static void main(String[] args) {
 		new yourclass().run();
 	}
 
@@ -101,7 +115,11 @@ public class yourclass extends Core implements KeyListener, MouseListener,
 			break;
 		}
 	    for (int x = 0;x<pathx1.size();x++){
-	    	if (((centrex1 == pathx1.get(x)) && (centrey1 == pathy1.get(x))) || ((centrex2 == pathx2.get(x)) && (centrey2 == pathy2.get(x))) || ((centrex1 == pathx2.get(x)) && (centrey1 == pathy2.get(x))) || ((centrex2 == pathx1.get(x)) && (centrey2 == pathy1.get(x)))){
+	    	if (((centrex1 == pathx1.get(x))
+                    && (centrey1 == pathy1.get(x))) || ((centrex2 == pathx2.get(x))
+                    && (centrey2 == pathy2.get(x))) || ((centrex1 == pathx2.get(x))
+                    && (centrey1 == pathy2.get(x))) || ((centrex2 == pathx1.get(x))
+                    && (centrey2 == pathy1.get(x)))){
 	    		System.exit(0);
 	    	}
 	    }

@@ -3,7 +3,13 @@ package net.jsenko.pv260;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public abstract class Core {
+public class Core {
+
+    private Drawable drawable;
+
+    private boolean running;
+
+    protected ScreenManager sm;
 
 	private static final DisplayMode modes[] = 
 		{
@@ -17,23 +23,30 @@ public abstract class Core {
 		new DisplayMode(640,480,24,0),
 		new DisplayMode(640,480,16,0),
 		};
-	private boolean running;
-	protected ScreenManager sm;
-	
-	public void stop(){
+
+
+
+
+    public Core(Drawable drawable) {
+        this.drawable = drawable;
+    }
+
+
+
+    public void stop(){
 		running = false;
 	}
 	
 	public void run(){
 		try{
-			init();
+			//init();
 			gameLoop();
 		}finally{
 			sm.restoreScreen();
 		}
 	}
 	
-	public void init(){
+	public ScreenManager init(){
 		sm = new ScreenManager();
 		DisplayMode dm = sm.findFirstCompatibaleMode(modes);
 		sm.setFullScreen(dm);
@@ -43,6 +56,7 @@ public abstract class Core {
 		w.setForeground(Color.RED);
 		w.setCursor(w.getToolkit().createCustomCursor(new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0),"null")); 
 		running = true;
+        return sm;
 	}
 	
 	public void gameLoop(){
@@ -54,7 +68,7 @@ public abstract class Core {
 			cumTime+= timePassed;
 			update(timePassed);
 			Graphics2D g = sm.getGraphics();
-			draw(g);
+			drawable.draw(g);
 			g.dispose();
 			sm.update();
 			
@@ -66,6 +80,6 @@ public abstract class Core {
 	
 	public void update(long timePassed){}
 	
-	public abstract void draw(Graphics2D g);
+	//public abstract void draw(Graphics2D g);
 	
 }
