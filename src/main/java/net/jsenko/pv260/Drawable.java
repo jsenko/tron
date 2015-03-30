@@ -9,10 +9,5 @@ public interface Drawable {
 
     void draw(Graphics2D g);
 
-
     void init(ScreenManager sm);
-
-
-
-    //void run();
 }

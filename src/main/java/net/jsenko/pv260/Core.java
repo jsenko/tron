@@ -8,6 +8,7 @@ import java.util.List;
 public class Core {
 
     private List<Drawable> drawable;
+    private final CollisionManager cm;
 
     private boolean running;
 
@@ -29,15 +30,14 @@ public class Core {
 
 
 
-    public Core(List<Drawable> drawable) {
+    public Core(List<Drawable> drawable, CollisionManager cm) {
         this.drawable = drawable;
+        this.cm = cm;
         init();
         for (Drawable d : drawable) {
             d.init(sm);
         }
-
     }
-
 
 
     public void stop(){
@@ -78,6 +78,7 @@ public class Core {
             for (Drawable d : drawable) {
                 d.draw(g);
             }
+            cm.detectCollisions();
 			g.dispose();
 			sm.update();
 			
