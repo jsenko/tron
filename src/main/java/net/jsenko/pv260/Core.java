@@ -1,17 +1,19 @@
 package net.jsenko.pv260;
 
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 public class Core {
 
-    private Drawable drawable;
+    private List<Drawable> drawable;
 
     private boolean running;
 
     protected ScreenManager sm;
 
-	private static final DisplayMode modes[] = 
+	private static final DisplayMode modes[] =
 		{
 		//new DisplayMode(1920,1080,32,0),
 		new DisplayMode(1680,1050,32,0),
@@ -27,8 +29,13 @@ public class Core {
 
 
 
-    public Core(Drawable drawable) {
+    public Core(List<Drawable> drawable) {
         this.drawable = drawable;
+        init();
+        for (Drawable d : drawable) {
+            d.init(sm);
+        }
+
     }
 
 
@@ -68,7 +75,9 @@ public class Core {
 			cumTime+= timePassed;
 			update(timePassed);
 			Graphics2D g = sm.getGraphics();
-			drawable.draw(g);
+            for (Drawable d : drawable) {
+                d.draw(g);
+            }
 			g.dispose();
 			sm.update();
 			
