@@ -1,60 +1,44 @@
 package net.jsenko.pv260;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.Collections;
 
+import net.jsenko.pv260.control.Control;
 import net.jsenko.pv260.geometry.Path;
 import net.jsenko.pv260.geometry.Point;
-import static net.jsenko.pv260.Direction.DOWN;
-import static net.jsenko.pv260.Direction.LEFT;
-import static net.jsenko.pv260.Direction.RIGHT;
-import static net.jsenko.pv260.Direction.UP;
 
-public class Bike implements Drawable, KeyListener, MouseListener,
-        MouseMotionListener, CollisionAware {
+public class Bike implements Drawable, CollisionAware {
 
+    private final int centrex1;
+    private final int centrey1;
+    private final Control control;
     boolean first = true;
 
     private ScreenManager sm;
 
     private Point position;
 
-    Direction currentDirection1;
-
     int moveAmount = 5;
 
     private Path path;
 
-    private int keyUp;
-    private int keyLeft;
-    private int keyRight;
-    private int keyDown;
     private Color color;
 
+    Direction currentDirection;
 
-    public Bike(int centrex1, int centrey1, Direction currentDirection1,
-                int keyUp, int keyLeft, int keyRight, int keyDown, Color color) {
+
+    public Bike(int centrex1, int centrey1, Control control, Color color, Direction direction) {
+        this.centrex1 = centrex1;
+        this.centrey1 = centrey1;
+        this.control = control;
         this.path = new Path();
-        this.keyUp = keyUp;
-        this.keyLeft = keyLeft;
-        this.keyRight = keyRight;
-        this.keyDown = keyDown;
         this.position = new Point(centrex1, centrey1);
         this.color = color;
-        this.currentDirection1 = currentDirection1;
+        this.currentDirection = direction;
     }
 
     public void init(ScreenManager sm) {
         this.sm = sm;
-        Window w = sm.getFullScreenWindow();
-        w.addKeyListener(this);
-        w.addMouseListener(this);
-        w.addMouseMotionListener(this);
     }
 
 
@@ -66,8 +50,14 @@ public class Bike implements Drawable, KeyListener, MouseListener,
         }
         first = false;
 
+        if (control.newEvent()) {
+            Direction newDirection = control.getDirection();
+            if(currentDirection.getOpposite() != newDirection)
+                currentDirection = newDirection;
+            control.reset();
+        }
 
-        switch (currentDirection1) {
+        switch (currentDirection) {
             case UP:
                 if (position.getY() > 0) {
                     position.setY(position.getY() - moveAmount);
@@ -98,64 +88,14 @@ public class Bike implements Drawable, KeyListener, MouseListener,
                 break;
         }
 
+
+
         for (Point point : path) {
             g.setColor(color);
             g.fillRect(point.getX(), point.getY(), 10, 10);
         }
     }
 
-
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == keyUp) {
-            if (currentDirection1 != DOWN) {
-                currentDirection1 = UP;
-            }
-        } else if (e.getKeyCode() == keyDown) {
-            if (currentDirection1 != UP) {
-                currentDirection1 = DOWN;
-            }
-        } else if (e.getKeyCode() == keyRight) {
-            if (currentDirection1 != LEFT) {
-                currentDirection1 = RIGHT;
-            }
-        } else if (e.getKeyCode() == keyLeft) {
-            if (currentDirection1 != RIGHT) {
-                currentDirection1 = LEFT;
-            }
-        }
-    }
-
-    public void keyReleased(KeyEvent e) {
-
-    }
-
-    public void keyTyped(KeyEvent arg0) {
-
-    }
-
-    public void mouseClicked(MouseEvent e) {
-
-    }
-
-    public void mouseEntered(MouseEvent arg0) {
-    }
-
-    public void mouseExited(MouseEvent arg0) {
-    }
-
-    public void mousePressed(MouseEvent e) {
-    }
-
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    public void mouseDragged(MouseEvent e) {
-
-    }
-
-    public void mouseMoved(MouseEvent e) {
-
-    }
 
     @Override
     public Iterable<Point> getHitboxPoints() {
